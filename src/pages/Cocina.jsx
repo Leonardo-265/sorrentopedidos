@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Historial from "./Historial.jsx";
 
 export default function Cocina() {
@@ -6,34 +6,62 @@ export default function Cocina() {
   const [pedidos, setPedidos] = useState([]);
   const [mostrarSoloPendientes, setMostrarSoloPendientes] = useState(false);
   const [error, setError] = useState(null);
+  const [toastVisible, setToastVisible] = useState(false);
+  const sonidoRef = useRef(null);
+  const cantidadAnteriorRef = useRef(0);
 
+  // Cargar sonido
   useEffect(() => {
-    const cargarPedidos = () => {
-      try {
-        if (typeof Storage === "undefined") {
-          setError("LocalStorage no está disponible");
-          return;
-        }
+    sonidoRef.current = new Audio("/sound/campana.mp3");
+  }, []);
 
-        const pedidosGuardados = localStorage.getItem("pedidosCocina");
-        if (pedidosGuardados) {
-          const pedidosParseados = JSON.parse(pedidosGuardados);
-          if (Array.isArray(pedidosParseados)) {
-            setPedidos(pedidosParseados);
-          } else {
-            console.warn("Los datos guardados no son un array válido");
-            setPedidos([]);
+  // Mostrar notificación
+  const mostrarNotificacion = () => {
+    setToastVisible(true);
+    if (sonidoRef.current) sonidoRef.current.play();
+    setTimeout(() => setToastVisible(false), 3000);
+  };
+
+  const cargarPedidos = () => {
+    try {
+      const pedidosGuardados = localStorage.getItem("pedidosCocina");
+      if (pedidosGuardados) {
+        const pedidosParseados = JSON.parse(pedidosGuardados);
+        if (Array.isArray(pedidosParseados)) {
+          if (pedidosParseados.length > cantidadAnteriorRef.current) {
+            mostrarNotificacion();
           }
+          cantidadAnteriorRef.current = pedidosParseados.length;
+          setPedidos(pedidosParseados);
         } else {
           setPedidos([]);
         }
-      } catch (error) {
-        console.error("Error al cargar pedidos:", error);
-        setError("Error al cargar pedidos");
+      } else {
+        setPedidos([]);
+      }
+    } catch (error) {
+      console.error("Error al cargar pedidos:", error);
+      setError("Error al cargar pedidos");
+    }
+  };
+
+  useEffect(() => {
+    cargarPedidos();
+    const interval = setInterval(() => {
+      cargarPedidos();
+    }, 2000);
+
+    const listener = (e) => {
+      if (e.key === "pedidosCocina") {
+        cargarPedidos();
       }
     };
+    window.addEventListener("storage", listener);
 
-    cargarPedidos();
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", listener);
+    };
   }, []);
 
   const convertirHoraAFecha = (horaString) => {
@@ -46,19 +74,16 @@ export default function Cocina() {
     const pedidoActual = nuevosPedidos[index];
     pedidoActual.estado = nuevoEstado;
 
-    // Si está "listo", lo pasamos al historial y lo quitamos de cocina
     if (nuevoEstado === "listo") {
-      // Guardar en historial
       const historial = JSON.parse(localStorage.getItem("historialPedidos") || "[]");
       historial.push({ ...pedidoActual, fecha: new Date().toLocaleString() });
       localStorage.setItem("historialPedidos", JSON.stringify(historial));
-
-      // Remover de la lista actual
       nuevosPedidos.splice(index, 1);
     }
 
     setPedidos(nuevosPedidos);
     localStorage.setItem("pedidosCocina", JSON.stringify(nuevosPedidos));
+    cantidadAnteriorRef.current = nuevosPedidos.length;
   };
 
   const pedidosFiltrados = (mostrarSoloPendientes
@@ -67,7 +92,7 @@ export default function Cocina() {
   ).sort((a, b) => convertirHoraAFecha(b.hora) - convertirHoraAFecha(a.hora));
 
   return (
-    <div className="p-4">
+    <div className="p-4 relative">
       <h1 className="text-2xl font-bold mb-4">👨‍🍳 Panel de Cocina</h1>
 
       <div className="flex gap-4 flex-wrap mb-4">
@@ -93,6 +118,12 @@ export default function Cocina() {
       {mostrarHistorial && <Historial />}
       {error && <p className="text-red-500">{error}</p>}
 
+      {toastVisible && (
+        <div className="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50">
+          📦 ¡Nuevo pedido recibido!
+        </div>
+      )}
+
       {pedidosFiltrados.length === 0 ? (
         <p>No hay pedidos en este momento.</p>
       ) : (
@@ -101,7 +132,7 @@ export default function Cocina() {
             <p>📦 <strong>Estado:</strong> {p.estado}</p>
             <p>⏰ <strong>Hora:</strong> {p.hora}</p>
             <p>👨‍🍳 <strong>Cliente:</strong> {p.cliente?.nombre || "No especificado"}</p>
-            <p>🔧 <strong>Teléfono:</strong> {p.cliente?.telefono || "No especificado"}</p>
+            <p>📞 <strong>Teléfono:</strong> {p.cliente?.telefono || "No especificado"}</p>
             <p>📍 <strong>Dirección:</strong> {p.cliente?.direccion || "No especificada"}</p>
 
             <p>🛒 <strong>Pedido:</strong></p>
