@@ -22,6 +22,7 @@ function Cliente() {
     setPedido([...pedido, producto]);
   };
 
+<<<<<<< HEAD
  const guardarPedidoCocinaLocal = (pedido) => {
   if (!nombre || !telefono || !direccion) {
     alert("Por favor, completá los datos del cliente.");
@@ -45,6 +46,22 @@ function Cliente() {
   });
   localStorage.setItem("pedidosCocina", JSON.stringify(pedidos));
 };
+=======
+  const guardarPedidoCocinaLocal = (pedido) => {
+    const pedidos = JSON.parse(localStorage.getItem("pedidosCocina") || "[]");
+    pedidos.push({
+      pedido,
+      cliente: {
+        nombre,
+        telefono,
+        direccion,
+      },
+      hora: new Date().toLocaleTimeString(),
+      estado: "pendiente",
+    });
+    localStorage.setItem("pedidosCocina", JSON.stringify(pedidos));
+  };
+>>>>>>> 5e788cc3fa7b868b2daa8ed20c58cfa26887ea9f
 
   const total = pedido.reduce((acc, prod) => acc + prod.precio, 0);
 
