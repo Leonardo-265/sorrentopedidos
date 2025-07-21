@@ -185,21 +185,25 @@
 
 {
   "categoria": "Promo",
+  "subcategoria": "Ñoquis",
   "nombre": "Ñoquis con Bolognesa",
   "precio": 5000
 },
 {
   "categoria": "Promo",
+  "subcategoria": "Ñoquis",
   "nombre": "Ñoquis con Fileto",
   "precio": 5000
 },
 {
   "categoria": "Promo",
+  "subcategoria": "Tallarines",
   "nombre": "Tallarines con Bolognesa",
   "precio": 5000
 },
 {
   "categoria": "Promo",
+  "subcategoria": "Tallarines",
   "nombre": "Tallarines con Fileto",
   "precio": 5000
 }
