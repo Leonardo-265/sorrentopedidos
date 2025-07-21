@@ -1,132 +1,89 @@
-import React, { useState, useEffect } from "react";
-import productosData from "../productos.json";
-import { supabase } from "../supabaseClient";
+import React, { useState } from "react";
+import productos from "../productos.json";
 
 function Cliente() {
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+  const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState(null);
   const [pedido, setPedido] = useState([]);
-  const [nombre, setNombre] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [direccion, setDireccion] = useState("");
 
-  // Agrupar productos por categoría
-  const categorias = [...new Set(productosData.map((p) => p.categoria))];
+  const categorias = [...new Set(productos.map(p => p.categoria))];
 
-  const productosPorCategoria = categorias.map((cat) => ({
-    categoria: cat,
-    productos: productosData.filter((p) => p.categoria === cat),
-  }));
+  const subcategorias = categoriaSeleccionada
+    ? [...new Set(productos.filter(p => p.categoria === categoriaSeleccionada).map(p => p.subcategoria))]
+    : [];
+
+  const productosFiltrados = subcategoriaSeleccionada
+    ? productos.filter(p => p.categoria === categoriaSeleccionada && p.subcategoria === subcategoriaSeleccionada)
+    : [];
 
   const agregarProducto = (producto) => {
-    setPedido((prev) => [...prev, producto]);
+    setPedido([...pedido, producto]);
   };
 
-  const eliminarProducto = (index) => {
-    setPedido((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const total = pedido.reduce((sum, p) => sum + p.precio, 0);
-
-  const confirmarPedido = async () => {
-    if (!nombre || !telefono || !direccion || pedido.length === 0) {
-      alert("Completá tus datos y agregá al menos un producto.");
-      return;
-    }
-
-    const { error } = await supabase.from("pedidos").insert([
-      {
-        nombre,
-        telefono,
-        direccion,
-        detalle: pedido.map((p) => p.nombre).join(", "),
-        total,
-        estado: "pendiente",
-      },
-    ]);
-
-    if (error) {
-      alert("Hubo un error al guardar el pedido.");
-      console.error(error);
-    } else {
-      alert("¡Pedido confirmado!");
-    }
-  };
+  const total = pedido.reduce((acc, prod) => acc + prod.precio, 0);
 
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 p-4 md:flex md:gap-4">
-      {/* Productos */}
-      <div className="md:w-2/3">
-        <h1 className="text-2xl font-bold mb-4">Menú</h1>
-        {productosPorCategoria.map(({ categoria, productos }) => (
-          <div key={categoria} className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">{categoria}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {productos.map((producto, index) => (
-                <button
-                  key={index}
-                  onClick={() => agregarProducto(producto)}
-                  className="bg-white p-4 rounded-lg shadow hover:bg-gray-50 text-left"
-                >
-                  <h3 className="font-medium">{producto.nombre}</h3>
-                  <p className="text-sm text-gray-500">
-                    ${producto.precio.toLocaleString()}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
+    <div className="p-4 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4 text-center">Sorrento Pedidos</h1>
+
+      {/* CATEGORÍAS */}
+      <div className="mb-4 flex flex-wrap gap-2 justify-center">
+        {categorias.map((cat) => (
+          <button
+            key={cat}
+            className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded shadow-md"
+            onClick={() => {
+              setCategoriaSeleccionada(cat);
+              setSubcategoriaSeleccionada(null);
+            }}
+          >
+            {cat}
+          </button>
         ))}
       </div>
 
-      {/* Pedido */}
-      <div className="md:w-1/3 bg-white rounded-lg shadow p-4 mt-6 md:mt-0">
-        <h2 className="text-xl font-semibold mb-4">Tu Pedido</h2>
-
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Teléfono"
-          value={telefono}
-          onChange={(e) => setTelefono(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Dirección"
-          value={direccion}
-          onChange={(e) => setDireccion(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        />
-
-        <ul className="mb-4">
-          {pedido.map((item, index) => (
-            <li key={index} className="flex justify-between items-center mb-1">
-              <span>{item.nombre}</span>
-              <span>${item.precio}</span>
-              <button
-                onClick={() => eliminarProducto(index)}
-                className="text-red-500 ml-2"
-              >
-                ✕
-              </button>
-            </li>
+      {/* SUBCATEGORÍAS */}
+      {subcategorias.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-2 justify-center">
+          {subcategorias.map((sub) => (
+            <button
+              key={sub}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md"
+              onClick={() => setSubcategoriaSeleccionada(sub)}
+            >
+              {sub}
+            </button>
           ))}
-        </ul>
+        </div>
+      )}
 
-        <div className="font-bold mb-4">Total: ${total.toLocaleString()}</div>
+      {/* PRODUCTOS */}
+      {productosFiltrados.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-2 justify-center">
+          {productosFiltrados.map((prod, i) => (
+            <button
+              key={i}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md"
+              onClick={() => agregarProducto(prod)}
+            >
+              {prod.nombre} - ${prod.precio}
+            </button>
+          ))}
+        </div>
+      )}
 
-        <button
-          onClick={confirmarPedido}
-          className="bg-green-600 text-white w-full py-2 rounded hover:bg-green-700"
-        >
-          Confirmar pedido
-        </button>
-      </div>
+      {/* PEDIDO */}
+      {pedido.length > 0 && (
+        <div className="mt-6 bg-gray-100 p-4 rounded shadow-md">
+          <h2 className="text-xl font-semibold mb-2">Pedido Actual:</h2>
+          <ul className="list-disc pl-5">
+            {pedido.map((item, idx) => (
+              <li key={idx}>{item.nombre} - ${item.precio}</li>
+            ))}
+          </ul>
+          <p className="mt-2 font-bold">Total: ${total}</p>
+        </div>
+      )}
     </div>
   );
 }
