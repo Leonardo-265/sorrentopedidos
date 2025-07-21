@@ -6,16 +6,10 @@ function Cliente() {
   const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState(null);
   const [pedido, setPedido] = useState([]);
 
-  const [nombre, setNombre] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [telefono, setTelefono] = useState("");
-
   const categorias = [...new Set(productos.map(p => p.categoria))];
-
   const subcategorias = categoriaSeleccionada
     ? [...new Set(productos.filter(p => p.categoria === categoriaSeleccionada).map(p => p.subcategoria))]
     : [];
-
   const productosFiltrados = subcategoriaSeleccionada
     ? productos.filter(p => p.categoria === categoriaSeleccionada && p.subcategoria === subcategoriaSeleccionada)
     : [];
@@ -24,28 +18,23 @@ function Cliente() {
     setPedido([...pedido, producto]);
   };
 
-  const total = pedido.reduce((acc, prod) => acc + prod.precio, 0);
-
-  const confirmarPedido = () => {
-    const resumen = {
-      cliente: { nombre, direccion, telefono },
+  const guardarPedidoCocinaLocal = (pedido) => {
+    const pedidos = JSON.parse(localStorage.getItem("pedidosCocina") || "[]");
+    pedidos.push({
       pedido,
-      total,
-      fecha: new Date().toLocaleString()
-    };
-    localStorage.setItem("pedidoCliente", JSON.stringify(resumen));
-    alert("¡Pedido confirmado!");
-    setPedido([]);
-    setNombre("");
-    setDireccion("");
-    setTelefono("");
+      hora: new Date().toLocaleTimeString(),
+      estado: "pendiente",
+    });
+    localStorage.setItem("pedidosCocina", JSON.stringify(pedidos));
   };
+
+  const total = pedido.reduce((acc, prod) => acc + prod.precio, 0);
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-4 text-center">Sorrento Pedidos</h1>
 
-      {/* CATEGORÍAS */}
+      {/* Categorías */}
       <div className="mb-4 flex flex-wrap gap-2 justify-center">
         {categorias.map((cat) => (
           <button
@@ -61,7 +50,7 @@ function Cliente() {
         ))}
       </div>
 
-      {/* SUBCATEGORÍAS */}
+      {/* Subcategorías */}
       {subcategorias.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-2 justify-center">
           {subcategorias.map((sub) => (
@@ -76,7 +65,7 @@ function Cliente() {
         </div>
       )}
 
-      {/* PRODUCTOS */}
+      {/* Productos */}
       {productosFiltrados.length > 0 && (
         <div className="mb-4 flex flex-wrap gap-2 justify-center">
           {productosFiltrados.map((prod, i) => (
@@ -91,7 +80,7 @@ function Cliente() {
         </div>
       )}
 
-      {/* PEDIDO ACTUAL */}
+      {/* Pedido */}
       {pedido.length > 0 && (
         <div className="mt-6 bg-gray-100 p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Pedido Actual:</h2>
@@ -101,37 +90,14 @@ function Cliente() {
             ))}
           </ul>
           <p className="mt-2 font-bold">Total: ${total}</p>
-        </div>
-      )}
 
-      {/* FORMULARIO DE DATOS Y CONFIRMACIÓN */}
-      {pedido.length > 0 && (
-        <div className="mt-6 bg-white p-4 rounded shadow-md">
-          <h2 className="text-xl font-semibold mb-2">Tus Datos</h2>
-          <input
-            type="text"
-            placeholder="Nombre"
-            className="block w-full mb-2 p-2 border rounded"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Dirección"
-            className="block w-full mb-2 p-2 border rounded"
-            value={direccion}
-            onChange={(e) => setDireccion(e.target.value)}
-          />
-          <input
-            type="tel"
-            placeholder="Teléfono"
-            className="block w-full mb-2 p-2 border rounded"
-            value={telefono}
-            onChange={(e) => setTelefono(e.target.value)}
-          />
           <button
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
-            onClick={confirmarPedido}
+            className="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+            onClick={() => {
+              guardarPedidoCocinaLocal(pedido);
+              setPedido([]);
+              alert("¡Pedido confirmado!");
+            }}
           >
             Confirmar Pedido
           </button>

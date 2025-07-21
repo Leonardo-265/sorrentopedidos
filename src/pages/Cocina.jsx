@@ -5,25 +5,37 @@ export default function Cocina() {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [pedidos, setPedidos] = useState([]);
   const [error, setError] = useState(null);
+  const [notificacion, setNotificacion] = useState(false);
+  const [ultimoPedidoId, setUltimoPedidoId] = useState(null);
+
+  // Cargar sonido
+  const sonido = new Audio("/notificacion.mp3");
 
   useEffect(() => {
     const cargarPedidos = () => {
       try {
-        // Verificar si localStorage está disponible
         if (typeof Storage === "undefined") {
           setError("LocalStorage no está disponible");
           return;
         }
 
         const pedidosGuardados = localStorage.getItem("pedidosCocina");
-        
+
         if (pedidosGuardados) {
           const pedidosParseados = JSON.parse(pedidosGuardados);
-          // Validar que sea un array
           if (Array.isArray(pedidosParseados)) {
-            setPedidos(pedidosParseados);
+            setPedidos((prev) => {
+              const ultimo = pedidosParseados[pedidosParseados.length - 1];
+              if (ultimo?.id !== ultimoPedidoId) {
+                setNotificacion(true);
+                sonido.play().catch(() => {});
+                setTimeout(() => setNotificacion(false), 4000);
+                setUltimoPedidoId(ultimo?.id);
+              }
+              return pedidosParseados;
+            });
           } else {
-            console.warn("Los datos guardados no son un array válido");
+            console.warn("Datos inválidos");
             setPedidos([]);
           }
         } else {
@@ -38,7 +50,6 @@ export default function Cocina() {
 
     cargarPedidos();
 
-    // Escuchar cambios en localStorage (útil si otros componentes modifican los datos)
     const handleStorageChange = (e) => {
       if (e.key === "pedidosCocina") {
         cargarPedidos();
@@ -47,18 +58,17 @@ export default function Cocina() {
 
     window.addEventListener("storage", handleStorageChange);
 
-    // Cleanup del event listener
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, []);
+  }, [ultimoPedidoId]);
 
   if (mostrarHistorial) {
     return <Historial volver={() => setMostrarHistorial(false)} />;
   }
 
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
+    <div className="p-4 bg-gray-100 min-h-screen relative">
       <h1 className="text-2xl font-bold mb-4">👨‍🍳 Panel de Cocina</h1>
 
       <button
@@ -74,13 +84,19 @@ export default function Cocina() {
         </div>
       )}
 
+      {notificacion && (
+        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50 animate-bounce">
+          📦 ¡Nuevo pedido recibido!
+        </div>
+      )}
+
       {pedidos.length === 0 ? (
         <p className="text-gray-600">No hay pedidos por preparar.</p>
       ) : (
         <div className="space-y-4">
           {pedidos.map((pedido, index) => (
             <div
-              key={pedido.id || index} // Usar ID único si está disponible
+              key={pedido.id || index}
               className="bg-white border rounded shadow p-4"
             >
               <p><strong>🧑 Cliente:</strong> {pedido.cliente?.nombre || "No especificado"}</p>
