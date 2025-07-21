@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Historial from "./Historial.jsx";
+import Historial from "../Historial.jsx";
 
 export default function Cocina() {
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
