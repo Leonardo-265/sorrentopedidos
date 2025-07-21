@@ -6,6 +6,10 @@ function Cliente() {
   const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState(null);
   const [pedido, setPedido] = useState([]);
 
+  const [nombre, setNombre] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [telefono, setTelefono] = useState("");
+
   const categorias = [...new Set(productos.map(p => p.categoria))];
 
   const subcategorias = categoriaSeleccionada
@@ -21,6 +25,21 @@ function Cliente() {
   };
 
   const total = pedido.reduce((acc, prod) => acc + prod.precio, 0);
+
+  const confirmarPedido = () => {
+    const resumen = {
+      cliente: { nombre, direccion, telefono },
+      pedido,
+      total,
+      fecha: new Date().toLocaleString()
+    };
+    localStorage.setItem("pedidoCliente", JSON.stringify(resumen));
+    alert("¡Pedido confirmado!");
+    setPedido([]);
+    setNombre("");
+    setDireccion("");
+    setTelefono("");
+  };
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
@@ -72,7 +91,7 @@ function Cliente() {
         </div>
       )}
 
-      {/* PEDIDO */}
+      {/* PEDIDO ACTUAL */}
       {pedido.length > 0 && (
         <div className="mt-6 bg-gray-100 p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Pedido Actual:</h2>
@@ -82,6 +101,40 @@ function Cliente() {
             ))}
           </ul>
           <p className="mt-2 font-bold">Total: ${total}</p>
+        </div>
+      )}
+
+      {/* FORMULARIO DE DATOS Y CONFIRMACIÓN */}
+      {pedido.length > 0 && (
+        <div className="mt-6 bg-white p-4 rounded shadow-md">
+          <h2 className="text-xl font-semibold mb-2">Tus Datos</h2>
+          <input
+            type="text"
+            placeholder="Nombre"
+            className="block w-full mb-2 p-2 border rounded"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Dirección"
+            className="block w-full mb-2 p-2 border rounded"
+            value={direccion}
+            onChange={(e) => setDireccion(e.target.value)}
+          />
+          <input
+            type="tel"
+            placeholder="Teléfono"
+            className="block w-full mb-2 p-2 border rounded"
+            value={telefono}
+            onChange={(e) => setTelefono(e.target.value)}
+          />
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+            onClick={confirmarPedido}
+          >
+            Confirmar Pedido
+          </button>
         </div>
       )}
     </div>
