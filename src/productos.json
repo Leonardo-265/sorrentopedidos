@@ -1,209 +1,31 @@
 [
- 
- {
-  "nombre": "MEDIA TARTA ATUN",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 10000
- },
- {
-  "nombre": "MEDIA TARTA CAPRECCE",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 8500
- },
- {
-  "nombre": "MEDIA TARTA CEBOLLA",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 8000
- },
- {
-  "nombre": "MEDIA TARTA CHOCLO",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 8500
- },
- {
-  "nombre": "MEDIA TARTA ESPINACA",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 8500
- },
- {
-  "nombre": "MEDIA TARTA JAMON Y QUESO",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 8000
- },
- {
-  "nombre": "MEDIA TARTA POLLO",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 9000
- },
- {
-  "nombre": "MEDIA TARTA VEGETALES",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 8500
- },
- {
-  "nombre": "MEDIA TARTA VERDURA",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 7500
- },
- {
-  "nombre": "MEDIA TARTA ZAPALLITOS",
-  "categoria": "Tartas",
-  "subcategoria": "Media Tarta",
-  "precio": 8000
- },
- 
 
- {
-  "nombre": "TARTA ATUN",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 16000
- },
- {
-  "nombre": "TARTA CAPRECCE",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 14500
- },
- {
-  "nombre": "TARTA CEBOLLA Y QUESO",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 13500
- },
- {
-  "nombre": "TARTA CHOCLO",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 14500
- },
- {
-  "nombre": "TARTA ESPINACA",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 14500
- },
- {
-  "nombre": "TARTA JAMON Y QUESO",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 13500
- },
- {
-  "nombre": "TARTA POLLO",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 15500
- },
- {
-  "nombre": "TARTA VERDURA",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 12500
- },
- {
-  "nombre": "TARTA VERGETALES MIXTOS",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 14500
- },
- {
-  "nombre": "TARTA ZAPALLITOS",
-  "categoria": "Tartas",
-  "subcategoria": "Tarta Grande",
-  "precio": 13500
- },
- {
-  "nombre": "TARTELETA VERDURA",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 6500
- },
- {
-  "nombre": "TARTELLETA ATUN",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 8500
- },
- {
-  "nombre": "TARTELLETA CAPRECCE",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 7500
- },
- {
-  "nombre": "TARTELLETA CEBOLLA Y QUESO",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 7300
- },
- {
-  "nombre": "TARTELLETA CHOCLO",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 7500
- },
- {
-  "nombre": "TARTELLETA ESPINACA",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 7500
- },
- {
-  "nombre": "TARTELLETA JAMON Y QUESO",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 7000
- },
- {
-  "nombre": "TARTELLETA POLLO",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 8000
- },
- {
-  "nombre": "TARTELLETA VEGETALES",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 7500
- },
- {
-  "nombre": "TARTELLETA ZAPALLITOS",
-  "categoria": "Tartas",
-  "subcategoria": "Tartelleta",
-  "precio": 7300
- },
 
 {
   "categoria": "Promo",
   "subcategoria": "Ñoquis",
+  "imagen": "nioqbolo.jpg",
   "nombre": "Ñoquis con Bolognesa",
   "precio": 5000
 },
 {
   "categoria": "Promo",
   "subcategoria": "Ñoquis",
+  "imagen": "nioquiszanahoria.jpg",
   "nombre": "Ñoquis con Fileto",
   "precio": 5000
 },
 {
   "categoria": "Promo",
   "subcategoria": "Tallarines",
+  "imagen": "hq720.jpg",
   "nombre": "Tallarines con Bolognesa",
   "precio": 5000
 },
 {
   "categoria": "Promo",
   "subcategoria": "Tallarines",
+  "imagen": "tallarines-caseros-con.jpg",
   "nombre": "Tallarines con Fileto",
   "precio": 5000
 }
